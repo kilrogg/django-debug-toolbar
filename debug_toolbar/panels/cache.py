@@ -7,7 +7,7 @@ from collections import OrderedDict
 
 from django.conf import settings
 from django.core import cache
-from django.core.cache import CacheHandler, caches as original_caches
+from django.core.cache import get_cache as get_cache_orig, DEFAULT_CACHE_ALIAS
 from django.core.cache.backends.base import BaseCache
 from django.dispatch import Signal
 from django.middleware import cache as middleware_cache
@@ -130,13 +130,12 @@ class CacheStatTracker(BaseCache):
         return self.cache.decr_version(*args, **kwargs)
 
 
-class CacheHandlerPatch(CacheHandler):
-    def __getitem__(self, alias):
-        actual_cache = super(CacheHandlerPatch, self).__getitem__(alias)
-        return CacheStatTracker(actual_cache)
+def patched_get_cache(alias):
+    actual_cache = get_cache_orig(alias)
+    return CacheStatTracker(actual_cache)
 
-
-middleware_cache.caches = CacheHandlerPatch()
+cache.get_cache = patched_get_cache
+cache.cache = patched_get_cache(DEFAULT_CACHE_ALIAS)
 
 
 class CachePanel(Panel):
@@ -234,17 +233,10 @@ class CachePanel(Panel):
         ) % dict(count=count)
 
     def enable_instrumentation(self):
-        if isinstance(middleware_cache.caches, CacheHandlerPatch):
-            cache.caches = middleware_cache.caches
-        else:
-            cache.caches = CacheHandlerPatch()
+        pass
 
     def disable_instrumentation(self):
-        cache.caches = original_caches
-        # While it can be restored to the original, any views that were
-        # wrapped with the cache_page decorator will continue to use a
-        # monkey patched cache.
-        middleware_cache.caches = original_caches
+        pass
 
     def generate_stats(self, request, response):
         self.record_stats(

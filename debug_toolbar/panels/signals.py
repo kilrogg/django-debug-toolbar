@@ -8,15 +8,15 @@ from django.db.models.signals import (
     class_prepared,
     post_delete,
     post_init,
-    post_migrate,
     post_save,
     pre_delete,
     pre_init,
     pre_save,
 )
-from django.utils.module_loading import import_string
+
 from django.utils.translation import ugettext_lazy as _, ungettext
 
+from debug_toolbar.compat import import_string
 from debug_toolbar.panels import Panel
 
 
@@ -35,7 +35,6 @@ class SignalsPanel(Panel):
         "post_save": post_save,
         "pre_delete": pre_delete,
         "post_delete": post_delete,
-        "post_migrate": post_migrate,
     }
 
     def nav_subtitle(self):

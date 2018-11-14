@@ -6,6 +6,7 @@ from os.path import normpath
 from pprint import pformat, saferepr
 
 from django import http
+from django.conf import settings
 from django.conf.urls import url
 from django.core import signing
 from django.db.models.query import QuerySet, RawQuerySet
@@ -219,13 +220,7 @@ class TemplatesPanel(Panel):
         # Fetch context_processors/template_dirs from any template
         if self.templates:
             context_processors = self.templates[0]["context_processors"]
-            template = self.templates[0]["template"]
-            # django templates have the 'engine' attribute, while jinja
-            # templates use 'backend'
-            engine_backend = getattr(template, "engine", None) or getattr(
-                template, "backend"
-            )
-            template_dirs = engine_backend.dirs
+            template_dirs = settings.TEMPLATE_DIRS
         else:
             context_processors = None
             template_dirs = []

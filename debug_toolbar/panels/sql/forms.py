@@ -9,7 +9,6 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import connections
 from django.utils.crypto import constant_time_compare
-from django.utils.encoding import force_bytes
 from django.utils.functional import cached_property
 
 from debug_toolbar.panels.sql.utils import reformat_sql
@@ -80,9 +79,9 @@ class SQLSelectForm(forms.Form):
         return reformat_sql(self.cleaned_data["sql"])
 
     def make_hash(self, data):
-        m = hmac.new(key=force_bytes(settings.SECRET_KEY), digestmod=hashlib.sha1)
+        m = hmac.new(key=str(settings.SECRET_KEY), digestmod=hashlib.sha1)
         for item in [data["sql"], data["params"]]:
-            m.update(force_bytes(item))
+            m.update(str(item))
         return m.hexdigest()
 
     @property

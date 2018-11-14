@@ -5,7 +5,7 @@
 <div id="djDebug" class="djdt-hidden" dir="ltr"
      {% if toolbar.store_id %}
      data-store-id="{{ toolbar.store_id }}"
-     data-render-panel-url="{% url 'djdt:render_panel' %}"
+     data-render-panel-url="{% url djdt:render_panel %}"
      {% endif %}
      {{ toolbar.config.ROOT_TAG_EXTRA_ATTRS|safe }}>
 	<div class="djdt-hidden" id="djDebugToolbar">

@@ -7,14 +7,14 @@ from __future__ import absolute_import, unicode_literals
 import uuid
 from collections import OrderedDict
 
-from django.apps import apps
+from django.conf import settings
 from django.conf.urls import url
 from django.core.exceptions import ImproperlyConfigured
 from django.template import TemplateSyntaxError
 from django.template.loader import render_to_string
-from django.utils.module_loading import import_string
 
 from debug_toolbar import settings as dt_settings
+from debug_toolbar.compat import import_string
 
 
 class DebugToolbar(object):
@@ -63,7 +63,7 @@ class DebugToolbar(object):
             context = {"toolbar": self}
             return render_to_string("debug_toolbar/base.html", context)
         except TemplateSyntaxError:
-            if not apps.is_installed("django.contrib.staticfiles"):
+            if "django.contrib.staticfiles" not in settings.INSTALLED_APPS:
                 raise ImproperlyConfigured(
                     "The debug toolbar requires the staticfiles contrib app. "
                     "Add 'django.contrib.staticfiles' to INSTALLED_APPS and "

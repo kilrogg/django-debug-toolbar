@@ -25,9 +25,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE_CLASSES = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -40,22 +39,7 @@ ROOT_URLCONF = "example.urls"
 
 STATIC_URL = "/static/"
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "APP_DIRS": True,
-        "DIRS": [os.path.join(BASE_DIR, "example", "templates")],
-        "OPTIONS": {
-            "debug": True,
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    }
-]
+TEMPLATE_DIRS = os.path.join(BASE_DIR, "example", "templates")
 
 WSGI_APPLICATION = "example.wsgi.application"
 

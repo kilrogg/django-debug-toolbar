@@ -3,9 +3,10 @@ from __future__ import absolute_import, unicode_literals
 import sys
 
 import django
-from django.apps import apps
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from debug_toolbar.compat import import_string
 from debug_toolbar.panels import Panel
 
 
@@ -33,9 +34,11 @@ class VersionsPanel(Panel):
         )
 
     def gen_app_versions(self):
-        for app_config in apps.get_app_configs():
-            name = app_config.verbose_name
-            app = app_config.module
+        for name in settings.INSTALLED_APPS:
+            try:
+                app = import_string(name)
+            except:
+                continue
             version = self.get_app_version(app)
             if version:
                 yield app.__name__, name, version

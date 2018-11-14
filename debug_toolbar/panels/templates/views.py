@@ -1,9 +1,10 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.conf import settings
 from django.core import signing
 from django.http import HttpResponseBadRequest
 from django.template import Origin, TemplateDoesNotExist
-from django.template.engine import Engine
+from django.template.loader import find_template_loader
 from django.template.response import SimpleTemplateResponse
 from django.utils.safestring import mark_safe
 
@@ -26,17 +27,11 @@ def template_source(request):
     template_name = request.GET.get("template", template_origin_name)
 
     final_loaders = []
-    loaders = Engine.get_default().template_loaders
 
-    for loader in loaders:
+    for loader_name in settings.TEMPLATE_LOADERS:
+        loader = find_template_loader(loader_name)
         if loader is not None:
-            # When the loader has loaders associated with it,
-            # append those loaders to the list. This occurs with
-            # django.template.loaders.cached.Loader
-            if hasattr(loader, "loaders"):
-                final_loaders += loader.loaders
-            else:
-                final_loaders.append(loader)
+            final_loaders.append(loader)
 
     for loader in final_loaders:
         origin = Origin(template_origin_name)

@@ -4,7 +4,7 @@ import warnings
 
 from django.conf import settings
 from django.utils import six
-from django.utils.lru_cache import lru_cache
+from backports.functools_lru_cache import lru_cache
 
 # Always import this module as follows:
 # from debug_toolbar import settings [as dt_settings]
@@ -34,7 +34,6 @@ CONFIG_DEFAULTS = {
         "django.core.handlers",
         "django.core.servers",
         "django.utils.decorators",
-        "django.utils.deprecation",
         "django.utils.functional",
     ),
     "PROFILER_MAX_DEPTH": 10,

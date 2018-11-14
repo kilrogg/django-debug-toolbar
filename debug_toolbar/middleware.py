@@ -7,15 +7,17 @@ from __future__ import absolute_import, unicode_literals
 import re
 import threading
 
+from backports.functools_lru_cache import lru_cache
+
 from django.conf import settings
 from django.utils import six
-from django.utils.deprecation import MiddlewareMixin
+
 from django.utils.encoding import force_text
-from django.utils.lru_cache import lru_cache
-from django.utils.module_loading import import_string
 
 from debug_toolbar import settings as dt_settings
+from debug_toolbar.compat import import_string
 from debug_toolbar.toolbar import DebugToolbar
+
 
 _HTML_TYPES = ("text/html", "application/xhtml+xml")
 
@@ -41,7 +43,7 @@ def get_show_toolbar():
         return func_or_path
 
 
-class DebugToolbarMiddleware(MiddlewareMixin):
+class DebugToolbarMiddleware(object):
     """
     Middleware to set up Debug Toolbar on incoming request and render toolbar
     on outgoing response.
@@ -123,7 +125,7 @@ class DebugToolbarMiddleware(MiddlewareMixin):
             response.set_cookie("djdt", "hide", 864000)
 
         # Insert the toolbar in the response.
-        content = force_text(response.content, encoding=response.charset)
+        content = force_text(response.content)
         insert_before = dt_settings.get_config()["INSERT_BEFORE"]
         pattern = re.escape(insert_before)
         bits = re.split(pattern, content, flags=re.IGNORECASE)

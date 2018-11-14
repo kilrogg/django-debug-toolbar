@@ -6,10 +6,10 @@ from colorsys import hsv_to_rgb
 from pstats import Stats
 
 from django.utils import six
-from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 
 from debug_toolbar import settings as dt_settings
+from debug_toolbar.compat import format_html
 from debug_toolbar.panels import Panel
 
 # Occasionally the disable method on the profiler is listed before
