@@ -13,6 +13,6 @@ except Exception:
 
 # Code that discovers files or modules in INSTALLED_APPS imports this module.
 
-urls = "debug_toolbar.toolbar", "djdt"
+urls = "debug_toolbar.toolbar", "debug_toolbar", "djdt"
 
 default_app_config = "debug_toolbar.apps.DebugToolbarConfig"
